@@ -1,0 +1,11 @@
+--- assembler/wtf/Platform.h.orig	2012-08-21 00:05:15.000000000 +0200
++++ assembler/wtf/Platform.h	2012-08-21 00:05:44.000000000 +0200
+@@ -337,7 +337,7 @@
+ /* PLATFORM(LINUX) */
+ /* Operating system level dependencies for Linux-like systems that */
+ /* should be used regardless of operating environment */
+-#ifdef __linux__
++#if defined(__linux__) && !defined(ANDROID)
+ #define WTF_PLATFORM_LINUX 1
+ #endif
+ 
