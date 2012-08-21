@@ -1,0 +1,20 @@
+--- lib/erl_interface/src/connect/ei_resolve.c.orig	2012-08-21 08:22:50.000000000 +0200
++++ lib/erl_interface/src/connect/ei_resolve.c	2012-08-21 08:24:22.000000000 +0200
+@@ -54,7 +54,7 @@
+ #include "ei_resolve.h"
+ #include "ei_locking.h"
+ 
+-#ifdef HAVE_GETHOSTBYNAME_R
++#if (defined(HAVE_GETHOSTBYNAME_R) && !defined(ANDROID_ARM))
+ 
+ void ei_init_resolve(void)
+ {
+@@ -603,7 +603,7 @@
+   /* threads disabled, no need to call reentrant function */
+   return gethostbyaddr(addr, length, type); 
+ #else
+-#ifndef HAVE_GETHOSTBYNAME_R
++#if (defined(HAVE_GETHOSTBYNAME_R) && defined(ANDROID_ARM))
+   return my_gethostbyaddr_r(addr,length,type,hostp,buffer,buflen,h_errnop);
+ #else
+ #if (defined(__GLIBC__) || (__FreeBSD_version >= 602000) || defined(__DragonFly__))

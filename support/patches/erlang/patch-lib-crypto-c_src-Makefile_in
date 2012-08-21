@@ -1,0 +1,11 @@
+--- lib/crypto/c_src/Makefile.in.orig	2012-08-21 08:04:15.000000000 +0200
++++ lib/crypto/c_src/Makefile.in	2012-08-21 08:05:00.000000000 +0200
+@@ -105,7 +105,7 @@
+ 
+ $(LIBDIR)/crypto$(TYPEMARKER).so: $(OBJS)
+ 	$(INSTALL_DIR) $(LIBDIR) 
+-	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(CRYPTO_LINK_LIB)
++	$(LD) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(CRYPTO_LINK_LIB) -L$(ERL_TOP)/bin/arm-unknown-eabi -lbeam -shared
+ 
+ $(LIBDIR)/crypto$(TYPEMARKER).dll: $(OBJS)
+ 	$(INSTALL_DIR) $(LIBDIR)

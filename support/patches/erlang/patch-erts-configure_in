@@ -1,0 +1,36 @@
+--- erts/configure.in.orig	2012-08-21 01:35:52.000000000 +0200
++++ erts/configure.in	2012-08-21 01:39:53.000000000 +0200
+@@ -1884,11 +1884,16 @@
+ AC_CHECK_FUNCS([getipnodebyname getipnodebyaddr gethostbyname2])
+ 
+ AC_CHECK_FUNCS([ieee_handler fpsetmask finite isnan isinf res_gethostbyname dlopen \
+-		pread pwrite writev memmove strerror strerror_r strncasecmp \
++		writev memmove strerror strerror_r strncasecmp \
+ 		gethrtime localtime_r gmtime_r inet_pton mmap mremap memcpy mallopt \
+ 		sbrk _sbrk __sbrk brk _brk __brk \
+ 		flockfile fstat strlcpy strlcat setsid posix2time setlocale nl_langinfo poll])
+ 
++dnl Android's pread / pwrite are present, but broken in many versions
++if test "x$CC" != "xagcc"; then
++    AC_CHECK_FUNCS([pread pwrite])
++fi
++
+ AC_CHECK_DECLS([posix2time],,,[#include <time.h>])
+ 
+ disable_vfork=false
+@@ -4014,6 +4019,15 @@
+ 		;;
+ 	esac
+     fi
++
++    if test "x$CC" == "xagcc" ; then
++        ssl_found=yes
++        ssl_linkable=yes
++        SSL_INCLUDE="-I$erl_xcomp_sysroot/external/openssl/include"
++        SSL_LIBDIR="$erl_xcomp_sysroot/out/target/product/generic/system/lib"
++        SSL_DYNAMIC_ONLY="yes"
++    fi
++
+ dnl		Now, certain linuxes have a 64bit libcrypto
+ dnl		that cannot build shared libraries (i.e. not PIC)
+ dnl		One could argue that this is wrong, but

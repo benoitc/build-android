@@ -1,0 +1,14 @@
+--- erts/emulator/sys/unix/erl_child_setup.c.orig	2012-08-21 07:48:59.000000000 +0200
++++ erts/emulator/sys/unix/erl_child_setup.c	2012-08-21 07:50:12.000000000 +0200
+@@ -116,7 +116,11 @@
+ 	    execv(argv[CS_ARGV_NO_OF_ARGS],&(argv[CS_ARGV_NO_OF_ARGS + 1]));
+ 	}
+     } else {
++#ifdef ANDROID_ARM
++    execl("/system/bin/sh", "sh", "-c", argv[CS_ARGV_CMD_IX], (char *) NULL);
++#else
+ 	execl("/bin/sh", "sh", "-c", argv[CS_ARGV_CMD_IX], (char *) NULL);
++#endif
+     }
+     return 1;
+ }

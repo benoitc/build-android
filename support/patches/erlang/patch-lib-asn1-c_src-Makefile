@@ -1,0 +1,11 @@
+--- lib/asn1/c_src/Makefile.orig	2012-08-21 08:02:30.000000000 +0200
++++ lib/asn1/c_src/Makefile	2012-08-21 08:03:12.000000000 +0200
+@@ -52,7 +52,7 @@
+ # FLAGS
+ # ----------------------------------------------------
+ CFLAGS = $(DED_INCLUDES) $(EI_INCLUDES) $(DED_CFLAGS)
+-LDFLAGS += $(DED_LDFLAGS)
++LDFLAGS += $(DED_LDFLAGS) -L$(ERL_TOP)/bin/arm-unknown-eabi -lbeam
+ 
+ # ----------------------------------------------------
+ # Target Specs

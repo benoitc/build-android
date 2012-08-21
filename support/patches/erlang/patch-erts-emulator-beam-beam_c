@@ -1,0 +1,5 @@
+--- /dev/null	2012-08-21 11:10:27.000000000 +0200
++++ erts/emulator/beam/beam.c	2012-08-21 11:18:52.000000000 +0200
+@@ -0,0 +1,2 @@
++void erl_start(int argc, char** argv);
++int main(int argc, char** argv) { erl_start(argc, argv); }

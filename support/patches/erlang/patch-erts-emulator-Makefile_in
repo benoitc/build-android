@@ -1,0 +1,67 @@
+--- erts/emulator/Makefile.in.orig	2012-08-21 11:12:00.000000000 +0200
++++ erts/emulator/Makefile.in	2012-08-21 11:16:05.000000000 +0200
+@@ -378,8 +378,13 @@
+ ifeq ($(TARGET), win32)
+ EMULATOR_EXECUTABLE = beam$(TF_MARKER).dll
+ else
++ifeq ($(CC), agcc)
++EMULATOR_EXECUTABLE = libbeam$(TF_MARKER).so
++EMULATOR_EXECUTABLE_REG = beam$(TF_MARKER)
++else
+ EMULATOR_EXECUTABLE = beam$(TF_MARKER)
+ endif
++endif
+ CS_EXECUTABLE = child_setup$(TYPEMARKER)
+ 
+ # ----------------------------------------------------------------------
+@@ -395,7 +400,11 @@
+ all:
+ 	@echo $(VOID_EMULATOR)' - omitted target all'
+ else
++ifeq ($(CC), agcc)
++all: generate erts_lib zlib pcre $(BINDIR)/$(EMULATOR_EXECUTABLE) $(BINDIR)/$(EMULATOR_EXECUTABLE_REG) $(UNIX_ONLY_BUILDS)
++else
+ all: $(BINDIR)/$(EMULATOR_EXECUTABLE) $(UNIX_ONLY_BUILDS)
++endif
+ ifeq ($(OMIT_OMIT_FP),yes)
+ 	@echo '* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *'
+ 	@echo '* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *'
+@@ -454,6 +463,7 @@
+ 	$(INSTALL_DATA) $(RELEASE_INCLUDES) $(RELEASE_PATH)/usr/include
+ 	$(INSTALL_DATA) $(RELEASE_INCLUDES) $(RELSYSDIR)/include
+ 	$(INSTALL_PROGRAM) $(BINDIR)/$(EMULATOR_EXECUTABLE) $(RELSYSDIR)/bin
++	$(INSTALL_PROGRAM) $(BINDIR)/$(EMULATOR_EXECUTABLE_REG) $(RELSYSDIR)/bin
+ ifeq ($(ERLANG_OSTYPE), unix)
+ 	$(INSTALL_PROGRAM) $(BINDIR)/$(CS_EXECUTABLE) $(RELSYSDIR)/bin
+ endif
+@@ -970,12 +980,30 @@
+ 	$(LDFLAGS) $(DEXPORT) $(INIT_OBJS) $(OBJS) $(LIBS)
+ else
+ 
++ifeq ($(CC), agcc)
++$(BINDIR)/$(EMULATOR_EXECUTABLE): $(INIT_OBJS) $(OBJS) $(DEPLIBS)
++	$(PURIFY) $(LD) -o $(BINDIR)/$(EMULATOR_EXECUTABLE) \
++	$(HIPEBEAMLDFLAGS) $(LDFLAGS) $(DEXPORT) $(INIT_OBJS) $(OBJS) $(LIBS) -shared
++
++$(OBJDIR)/beam.o:
++	$(CC) $(CFLAGS) $(INCLUDES) -c beam/beam.c -o $(OBJDIR)/beam.o
+ 
++$(BINDIR)/$(EMULATOR_EXECUTABLE_REG): $(OBJDIR)/beam.o
++	$(PURIFY) $(LD) -o $(BINDIR)/$(EMULATOR_EXECUTABLE_REG) \
++	$(HIPEBEAMLDFLAGS) $(LDFLAGS) $(DEXPORT) $(OBJDIR)/beam.o $(LIBS) -L$(BINDIR) -lbeam
++else
+ $(BINDIR)/$(EMULATOR_EXECUTABLE): $(INIT_OBJS) $(OBJS) $(DEPLIBS)
+ 	$(PURIFY) $(LD) -o $(BINDIR)/$(EMULATOR_EXECUTABLE) \
+ 	$(HIPEBEAMLDFLAGS) $(LDFLAGS) $(DEXPORT) $(INIT_OBJS) $(OBJS) $(LIBS)
+ 
+ endif
++$(BINDIR)/$(EMULATOR_EXECUTABLE_ELIB): $(INIT_OBJS) $(OBJS_ELIB) $(DEPLIBS)
++	$(PURIFY) $(LD) -o $(BINDIR)/$(EMULATOR_EXECUTABLE_ELIB) \
++	$(LDFLAGS) $(DEXPORT) $(INIT_OBJS) $(OBJS_ELIB) $(LIBS)
++$(BINDIR)/$(EMULATOR_EXECUTABLE_SAE): $(INIT_OBJS_SAE) $(OBJS_SAE) $(DEPLIBS)
++	$(PURIFY) $(LD) -o $(BINDIR)/$(EMULATOR_EXECUTABLE_SAE) \
++	$(LDFLAGS) $(DEXPORT) $(INIT_OBJS_SAE) $(OBJS_SAE) $(LIBS)
++endif
+ 
+ # ----------------------------------------------------------------------
+ # Dependencies

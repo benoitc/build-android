@@ -8,6 +8,8 @@ cd $CORE_TOP
 
 CORE_TOP=`pwd`
 
+export PATH=$CORE_TOP/support:$PATH
+
 CURLBIN=`which curl`
 if ! test -n "CURLBIN"; then
     display_error "Error: curl is required. Add it to 'PATH'"
@@ -144,16 +146,37 @@ build_openssl()
 clean_erlang()
 {
     rm -rf $STATICLIBS/$ERLANG_DIR
-    rm -f $DISTDIR/$ERLANG_DISTNAME
+    #rm -f $DISTDIR/$ERLANG_DISTNAME
 }
 
 build_erlang()
 {
-    fetch $ERLANG_DISTNAME $ERLANG_SITE
+    #fetch $ERLANG_DISTNAME $ERLANG_SITE
 
     cd $STATICLIBS
     $GUNZIP -c $DISTDIR/$ERLANG_DISTNAME | $TAR -xf -
 
+    echo "==> apply Erlang patches"
+    cd $ERLANG_DIR
+    for patch in $PATCHES/erlang/*
+    do
+        patch -p0 -i $patch
+    done
+
+    echo "==> build Erlang"
+    SKIP=("appmon" "asn1" "common_test" "cosEvent" "cosEventDomain" "cosFileTransfer" "cosNotification" "cosProperty" "cosTime" "cosTransactions" "wx" "debugger" "ssh" "test_server" "toolbar" "odbc" "orber" "reltool" "observer" "dialyzer" "docbuilder" "edoc" "et" "gs" "hipe" "runtime_tools" "percept" "pman" "inviso" "tv" "typer" "webtool" "jinterface" "megaco" "mnesia" "erl_interface" "diameter" "pcre")
+
+    for item in ${SKIP[*]}
+    do
+        touch "lib/$item/SKIP"
+    done
+
+
+    export ANDROID_SYS_ROOT=$ANDROID_NDK_ROOT
+    ./otp_build autoconf
+    ./otp_build configure --xcomp-conf=xcomp/erl-xcomp-android.conf --with-ssl=$OPENSSL_DIR
+    ./otp_build boot -a
+    ./otp_build release -a $STATICLIBS/erlang
 }
 
 clean_js()

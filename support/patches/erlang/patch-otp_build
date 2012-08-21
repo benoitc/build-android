@@ -1,0 +1,25 @@
+--- otp_build.orig	2012-08-21 08:35:51.000000000 +0200
++++ otp_build	2012-08-21 08:38:42.000000000 +0200
+@@ -327,7 +327,7 @@
+ 	    export WANT_AUTOCONF_VER
+ 	fi
+ 	exp_ac_vsn=$EXPECTED_AUTOCONF_VERSION
+-	ac_vsn_blob=`autoconf --version`
++	ac_vsn_blob=`autoconf2.59 --version`
+ 	ac_vsn=`echo x$ac_vsn_blob | sed "s|[^0-9]*\([0-9][^ \t\n]*\).*|\1|"`
+ 	case "$ac_vsn" in
+ 	    $exp_ac_vsn)
+@@ -370,11 +370,11 @@
+ 		rm -f "$d"/autom4te.cache/*
+ 	    }
+ 	    echo "=== running autoconf in $d"
+-	    ( cd "$d" && autoconf ) || exit 1
++	    ( cd "$d" && autoconf2.59 ) || exit 1
+ 	    chdr=`cat "$file" | sed -n "s|.*\(AC_CONFIG_HEADER\).*|\1|p"`
+ 	    [ "$chdr" = "AC_CONFIG_HEADER" ] || continue
+ 	    echo "=== running autoheader in $d"
+-	    ( cd "$d" && autoheader ) || exit 1
++	    ( cd "$d" && autoheader2.59 ) || exit 1
+ 	done
+ 
+ 	restore_vars OVERRIDE_TARGET TARGET

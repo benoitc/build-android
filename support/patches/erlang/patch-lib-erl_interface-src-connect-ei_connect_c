@@ -1,0 +1,15 @@
+--- lib/erl_interface/src/connect/ei_connect.c.orig	2012-08-21 08:19:30.000000000 +0200
++++ lib/erl_interface/src/connect/ei_connect.c	2012-08-21 08:21:46.000000000 +0200
+@@ -1164,7 +1164,12 @@
+     uname(&s.name);
+     s.cpu  = clock();
+     s.pid  = getpid();
++    #ifndef ANDROID_ARM
+     s.hid  = gethostid();
++    #else
++    //TODO Proper android fix
++    s.hid = 0;
++    #endif
+     s.uid  = getuid();
+     s.gid  = getgid();
+ 

@@ -1,0 +1,11 @@
+--- erts/lib_src/common/erl_misc_utils.c.orig	2012-08-21 11:19:58.000000000 +0200
++++ erts/lib_src/common/erl_misc_utils.c	2012-08-21 11:20:24.000000000 +0200
+@@ -761,7 +761,7 @@
+ }
+ 
+ 
+-#ifdef __linux__
++#if (defined(__linux__) && !defined(ANDROID_ARM))
+ 
+ static int
+ read_file(char *path, char *buf, int size)

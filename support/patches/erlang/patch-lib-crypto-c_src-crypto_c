@@ -1,0 +1,57 @@
+--- lib/crypto/c_src/crypto.c.orig	2012-08-21 08:06:30.000000000 +0200
++++ lib/crypto/c_src/crypto.c	2012-08-21 08:12:31.000000000 +0200
+@@ -48,7 +48,9 @@
+ #include <openssl/objects.h>
+ #include <openssl/rc4.h>
+ #include <openssl/rc2.h>
++#ifndef ANDROID_ARM
+ #include <openssl/blowfish.h>
++#endif
+ #include <openssl/rand.h>
+ #include <openssl/evp.h>
+ #include <openssl/hmac.h>
+@@ -182,10 +184,12 @@
+ static ERL_NIF_TERM dh_check(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
+ static ERL_NIF_TERM dh_generate_key_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
+ static ERL_NIF_TERM dh_compute_key_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
++#ifndef ANDROID_ARM
+ static ERL_NIF_TERM bf_cfb64_crypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
+ static ERL_NIF_TERM bf_cbc_crypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
+ static ERL_NIF_TERM bf_ecb_crypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
+ static ERL_NIF_TERM blowfish_ofb64_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]);
++#endif
+ 
+ 
+ /* openssl callbacks */
+@@ -269,11 +273,13 @@
+     {"dh_generate_parameters_nif", 2, dh_generate_parameters_nif},
+     {"dh_check", 1, dh_check},
+     {"dh_generate_key_nif", 2, dh_generate_key_nif},
+-    {"dh_compute_key_nif", 3, dh_compute_key_nif},
+-    {"bf_cfb64_crypt", 4, bf_cfb64_crypt},
++    {"dh_compute_key_nif", 3, dh_compute_key_nif}
++#ifndef ANDROID_ARM
++    ,{"bf_cfb64_crypt", 4, bf_cfb64_crypt},
+     {"bf_cbc_crypt", 4, bf_cbc_crypt},
+     {"bf_ecb_crypt", 3, bf_ecb_crypt},
+     {"blowfish_ofb64_encrypt", 3, blowfish_ofb64_encrypt}
++#endif
+ };
+ 
+ ERL_NIF_INIT(crypto,nif_funcs,load,reload,upgrade,unload)
+@@ -1806,6 +1812,7 @@
+     return ret;
+ }
+ 
++#ifndef ANDROID_ARM
+ static ERL_NIF_TERM bf_cfb64_crypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])    
+ {/* (Key, Ivec, Data, IsEncrypt) */
+     ErlNifBinary key_bin, ivec_bin, data_bin;
+@@ -1890,6 +1897,7 @@
+ 		     data_bin.size, &bf_key, bf_tkey, &bf_n);
+     return ret;
+ }
++#endif
+ 
+ 
+ 

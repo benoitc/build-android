@@ -1,0 +1,20 @@
+--- lib/os_mon/c_src/memsup.c.orig	2012-08-21 09:03:20.000000000 +0200
++++ lib/os_mon/c_src/memsup.c	2012-08-21 09:04:14.000000000 +0200
+@@ -370,7 +370,7 @@
+ }
+ #endif
+ 
+-
++#ifndef ANDROID_ARM
+ #if defined(__linux__) /* ifdef SYSINFO */
+ /* sysinfo does not include cached memory which is a problem. */
+ static int
+@@ -391,7 +391,7 @@
+     return 1;
+ }
+ #endif
+-
++#endif
+ 
+ #if defined(_SC_AVPHYS_PAGES)
+ static int

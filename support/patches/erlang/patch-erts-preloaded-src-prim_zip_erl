@@ -1,0 +1,25 @@
+--- erts/preloaded/src/prim_zip.erl.orig	2012-08-21 07:57:39.000000000 +0200
++++ erts/preloaded/src/prim_zip.erl	2012-08-21 08:00:58.000000000 +0200
+@@ -179,8 +179,7 @@
+ 			       extra_field_length = EFLen,
+ 			       comp_method = CompMethod} =
+ 		local_file_header_from_bin(BLH, F),
+-	    DataOffs = ?LOCAL_FILE_HEADER_SZ + FNLen + EFLen
+-		+ offset_over_z_data_descriptor(GPFlag),
++	    DataOffs = ?LOCAL_FILE_HEADER_SZ + FNLen + EFLen,
+ 	    case B of
+ 		<<_:DataOffs/binary, Data/binary>> ->
+ 		    Out = get_z_all(CompMethod, Data, Z, F),
+@@ -211,12 +210,6 @@
+ get_z_all(CompMethod, _, _, F) ->
+     throw({unsupported_compression, F, CompMethod}).
+ 
+-%% skip data descriptor if any
+-offset_over_z_data_descriptor(GPFlag) when GPFlag band 8 =:= 8 ->
+-    12;
+-offset_over_z_data_descriptor(_GPFlag) ->
+-    0.
+-
+ %% get the central directory from the archive
+ get_central_dir(#primzip{in = In0, input = Input} = PrimZip, FilterFun, FilterAcc) ->
+     {B, In1} = get_end_of_central_dir(In0, ?END_OF_CENTRAL_DIR_SZ, Input),
