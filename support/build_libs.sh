@@ -149,7 +149,6 @@ clean_erlang()
 
 build_erlang()
 {
-    echo $PATH
     echo "==> setup Erlang sources"
     fetch $ERLANG_DISTNAME $ERLANG_SITE
 
@@ -172,10 +171,10 @@ build_erlang()
         touch "lib/$item/SKIP"
     done
 
-
+    echo $OPENSSL_DIR
     export ANDROID_SYS_ROOT=$ANDROID_NDK_ROOT
     ./otp_build autoconf
-    ./otp_build configure --xcomp-conf=xcomp/erl-xcomp-android.conf --with-ssl=$OPENSSL_DIR
+    ./otp_build configure --xcomp-conf=xcomp/erl-xcomp-android.conf --disable-dynamic-ssl-lib --with-ssl=$OPENSSL_DIR
     ./otp_build boot -a
     ./otp_build release -a $STATICLIBS/erlang
 }
