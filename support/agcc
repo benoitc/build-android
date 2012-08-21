@@ -3,12 +3,11 @@
 BUILD_LIBS_DIR=$(cd ${0%/*} && pwd)
 
 export CORE_TOP=${BUILD_LIBS_DIR%/*}
-cd $CORE_TOP
+#cd $CORE_TOP
 
 AGCC_BIN=$CORE_TOP/support/agcc.pl
 
 TOOLCHAIN=$CORE_TOP/toolchain
-ANDROID_NDK_ROOT=/Users/benoitc/android-ndks/android-ndk-r5c
 PATH=$CORE_TOP/support:$TOOLCHAIN/bin:$PATH
 
 $AGCC_BIN $@

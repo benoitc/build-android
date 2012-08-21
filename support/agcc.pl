@@ -35,17 +35,19 @@ use strict;
 my $GCC = `which arm-eabi-gcc`;
 $GCC = qx(cd `dirname $GCC`; /bin/pwd);
 chomp $GCC;
-#die "bad arm-eabi-gcc path" if $GCC !~ /(.*)\/prebuilt\//;
-my $DROID = "toolchain";
+
+print $GCC;
+die "bad arm-eabi-gcc path" if $GCC !~ /(.*)\/toolchain\//;
+my $DROID = $1;
 
 
 
-my $ALIB = "$DROID/sysroot/usr/lib";
-my $PREBUILT="$DROID";
-my $TOOLCHAIN = "$DROID";
-my $INTERWORK = "$DROID/arm-linux-androideabi";
+my $ALIB = "$DROID/toolchain/sysroot/usr/lib";
+my $PREBUILT="$DROID/toolchain";
+my $TOOLCHAIN = "$DROID/toolchain";
+my $INTERWORK = "$TOOLCHAIN/arm-linux-androideabi";
 #my $LDSCRIPTS = "$PREBUILT/arm-eabi-4.4.0/arm-eabi/lib/ldscripts/";
-my $LDSCRIPTS = "$DROID/arm-linux-androideabi/lib/ldscripts";
+my $LDSCRIPTS = "$TOOLCHAIN/arm-linux-androideabi/lib/ldscripts";
 
 
 
@@ -54,9 +56,7 @@ print "DROID at $DROID \n";
 print "TOOLCHAIN at $TOOLCHAIN \n";
 print "\n\n\n";
 my @include_paths = (
-    "-I$DROID/sysroot/usr/include",
-    "-I$DROID/include",
-    "-I$DROID/arm-linux-androideabi/include"
+    "-I$DROID/sysroot/usr/include"
 );
 
 my @preprocess_args = (
@@ -109,11 +109,11 @@ my @link_args = (
     "-Wl,--no-undefined",
     "-Wl,-rpath-link=$ALIB",
     "-L$ALIB",
-    "-Llib/gcc/arm-linux-androideabi/4.4.3/armv7-a",
-    "-lgcc",
-    "-nostdlib",
     "$ALIB/crtend_android.o",
     "$ALIB/crtbegin_dynamic.o",
+    "-L$TOOLCHAIN/lib/gcc/arm-linux-androideabi/4.4.3/armv7-a",
+    "-lgcc",
+    "-nostdlib",
     #"$TOOLCHAIN/lib/gcc/arm-eabi/4.2.1/interwork/libgcc.a",
     "-lc",
     "$TOOLCHAIN/lib/gcc/arm-linux-androideabi/4.4.3/libgcc.a",
@@ -126,17 +126,18 @@ my @shared_args = (
     "-Wl,-T,$LDSCRIPTS/armelf_linux_eabi.xsc",
     "-Wl,--gc-sections",
     "-Wl,-shared,-Bsymbolic",
-    "-L$ALIB",
-    "$ALIB/crtend_so.o",
-    "$ALIB/crtbegin_dynamic.o",
+
     "-Wl,--no-whole-archive",
     "-lc",
     "-lm",
     "-Wl,--no-undefined",
-    "-Llib/gcc/arm-linux-androideabi/4.4.3/armv7-a",
+    "-L$TOOLCHAIN/lib/gcc/arm-linux-androideabi/4.4.3/armv7-a",
     "-lgcc",
     "$TOOLCHAIN/lib/gcc/arm-linux-androideabi/4.4.3/libgcc.a",
-    "-Wl,--whole-archive"); # .a, .o input files go *after* here
+    "-Wl,--whole-archive",
+    "-L$ALIB",
+    "$ALIB/crtend_so.o",
+    "$ALIB/crtbegin_dynamic.o"); # .a, .o input files go *after* here
 
 # Now implement a quick parser for a gcc-like command line
 

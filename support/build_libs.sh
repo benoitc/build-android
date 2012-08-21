@@ -45,7 +45,7 @@ ERLANG_DISTNAME=otp_src_R15B01.tar.gz
 ERLANG_SITE=http://dl.refuge.io
 ERLANG_DIR=otp_src_R15B01
 
-ANDROID_NDK_ROOT=/Users/benoitc/android-ndks/android-ndk-r8b
+ANDROID_NDK_ROOT=/Users/benoitc/android-ndks/android-ndk-r8
 ANDROID_SDK_ROOT=/Users/benoitc/android-sdks
 TOOLCHAIN=$CORE_TOP/toolchain
 
@@ -165,7 +165,7 @@ build_erlang()
     done
 
     echo "==> build Erlang"
-    SKIP=("appmon" "asn1" "common_test" "cosEvent" "cosEventDomain" "cosFileTransfer" "cosNotification" "cosProperty" "cosTime" "cosTransactions" "wx" "debugger" "ssh" "test_server" "toolbar" "odbc" "orber" "observer" "dialyzer" "docbuilder" "edoc" "et" "gs" "hipe" "percept" "pman" "inviso" "tv" "typer" "webtool" "jinterface" "megaco" "mnesia" "erl_interface" "diameter" "pcre")
+    SKIP=("appmon" "asn1" "common_test" "cosEvent" "cosEventDomain" "cosFileTransfer" "cosNotification" "cosProperty" "cosTime" "cosTransactions" "wx" "debugger" "ssh" "test_server" "toolbar" "odbc" "orber" "reltool" "observer" "dialyzer" "docbuilder" "edoc" "et" "gs" "hipe" "runtime_tools" "percept" "pman" "inviso" "tv" "typer" "webtool" "jinterface" "megaco" "mnesia" "erl_interface" "diameter" "pcre")
 
     for item in ${SKIP[*]}
     do
@@ -243,7 +243,7 @@ do_setup()
     echo "==> setup toolchain"
     rm -r $TOOLCHAIN || true
     $ANDROID_NDK_ROOT/build/tools/make-standalone-toolchain.sh \
-        --platform=android-8 \
+        --platform=android-9 \
         --toolchain=arm-linux-androideabi-4.4.3 \
         --install-dir=$TOOLCHAIN
 
