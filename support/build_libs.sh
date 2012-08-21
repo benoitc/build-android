@@ -146,12 +146,12 @@ build_openssl()
 clean_erlang()
 {
     rm -rf $STATICLIBS/$ERLANG_DIR
-    #rm -f $DISTDIR/$ERLANG_DISTNAME
+    rm -f $DISTDIR/$ERLANG_DISTNAME
 }
 
 build_erlang()
 {
-    #fetch $ERLANG_DISTNAME $ERLANG_SITE
+    fetch $ERLANG_DISTNAME $ERLANG_SITE
 
     cd $STATICLIBS
     $GUNZIP -c $DISTDIR/$ERLANG_DISTNAME | $TAR -xf -
