@@ -35,7 +35,7 @@ use strict;
 my $GCC = `which arm-eabi-gcc`;
 $GCC = qx(cd `dirname $GCC`; /bin/pwd);
 chomp $GCC;
-die "bad arm-eabi-gcc path" if $GCC !~ /(.*)\/prebuilt\//;
+#die "bad arm-eabi-gcc path" if $GCC !~ /(.*)\/prebuilt\//;
 my $DROID = $1;
 
 

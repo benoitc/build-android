@@ -8,8 +8,6 @@ cd $CORE_TOP
 
 CORE_TOP=`pwd`
 
-export PATH=$CORE_TOP/support:$PATH
-
 CURLBIN=`which curl`
 if ! test -n "CURLBIN"; then
     display_error "Error: curl is required. Add it to 'PATH'"
@@ -146,16 +144,19 @@ build_openssl()
 clean_erlang()
 {
     rm -rf $STATICLIBS/$ERLANG_DIR
-    rm -f $DISTDIR/$ERLANG_DISTNAME
+    #rm -f $DISTDIR/$ERLANG_DISTNAME
 }
 
 build_erlang()
 {
-    fetch $ERLANG_DISTNAME $ERLANG_SITE
+    echo $PATH
+    echo "==> setup Erlang sources"
+    #fetch $ERLANG_DISTNAME $ERLANG_SITE
 
     cd $STATICLIBS
     $GUNZIP -c $DISTDIR/$ERLANG_DISTNAME | $TAR -xf -
 
+    echo `which agcc` 
     echo "==> apply Erlang patches"
     cd $ERLANG_DIR
     for patch in $PATCHES/erlang/*
@@ -257,6 +258,7 @@ do_setup()
         ln -sf $f ${f/arm-linux-androideabi-/arm-linux-eabi-}
     done
     
+    export PATH=$CORE_TOP/support:$CORE_TOP/toolchain/bin:$PATH
 }
 
 do_builddeps()
