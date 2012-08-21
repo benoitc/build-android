@@ -10,7 +10,7 @@ R15b01. It is also building spidermonkey 1.8.5 .
 
 ## REQUIREMENTS
 
-- Android NDK rc5c
+- Android NDK r8
 - Android SDK 8 
 
 ## Setup environment
